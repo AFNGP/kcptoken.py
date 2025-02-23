@@ -7,9 +7,9 @@ license = "MIT"
 
 readme = "README.md"
 
-homepage = "https://github.com/AFNGP/kcp.py"
-repository = "https://github.com/AFNGP/kcp.py"
-documentation = "https://github.com/AFNGP/kcp.py"
+homepage = "https://github.com/AFNGP/kcptoken.py"
+repository = "https://github.com/AFNGP/kcptoken.py"
+documentation = "https://github.com/AFNGP/kcptoken.py"
 
 keywords = ["kcp", "server", "client", "async", "asyncio"]
 
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Issues = "https://github.com/AFNGP/kcp.py/issues"
+Issues = "https://github.com/AFNGP/kcptoken.py/issues"
 
 [[tool.poetry.packages]]
 include = "kcptoken"

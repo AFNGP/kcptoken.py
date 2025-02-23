@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 
-from kcp import KCPClientSync
+from kcptoken import KCPClientSync
 
 client = KCPClientSync(
     "127.0.0.1",

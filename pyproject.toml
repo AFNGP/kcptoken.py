@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "kcp"
+name = "kcptoken"
 version = "0.1.6"
-description = "Python bindings and networking for the KCP protocol."
-authors = ["RealistikDash"]
+description = "Python bindings and networking for modified KCP protocol."
+authors = ["RealistikDash", "AFNGP"]
 license = "MIT"
 
 readme = "README.md"
 
-homepage = "https://github.com/RealistikDash/kcp.py"
-repository = "https://github.com/RealistikDash/kcp.py"
-documentation = "https://github.com/RealistikDash/kcp.py"
+homepage = "https://github.com/AFNGP/kcp.py"
+repository = "https://github.com/AFNGP/kcp.py"
+documentation = "https://github.com/AFNGP/kcp.py"
 
 keywords = ["kcp", "server", "client", "async", "asyncio"]
 
@@ -23,21 +23,21 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Issues = "https://github.com/RealistikDash/kcp.py/issues"
+Issues = "https://github.com/AFNGP/kcp.py/issues"
 
 [[tool.poetry.packages]]
-include = "kcp"
+include = "kcptoken"
 
 [[tool.poetry.include]]
-path = "kcp/*.so"
+path = "kcptoken/*.so"
 format = "wheel"
 
 [[tool.poetry.include]]
-path = "kcp/*.pyd"
+path = "kcptoken/*.pyd"
 format = "wheel"
 
 [[tool.poetry.include]]
-path = "kcp"
+path = "kcptoken"
 format = "wheel"
 
 [tool.poetry.build]

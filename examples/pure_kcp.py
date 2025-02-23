@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from kcp import KCP
+from kcptoken import KCP
 
 kcp1 = KCP(
     conv_id=1,

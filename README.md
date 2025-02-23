@@ -1,21 +1,18 @@
 # kcp.py
-Python bindings and networking for the KCP protocol.
+Python bindings and networking for modified KCP protocol. Modification involves support for a 4-byte token right after conversation id, by changing coversation id to 8 bytes.
 
 ## What is KCP?
 KCP is a protocol focusing on low latency data delivery with a guarantee of data delivery. It serves as an alternative to the TCP protocol.
 
 ## How to install?
-kcp.py is available on [PyPi](https://pypi.org/project/kcp/), meaning installing is as simple as running
-```sh
-pip install kcp
-```
+Run `build.py` and copy `kcptoken` to `lib/site-packages`
 
 ## Examples
 ### Just the raw connection
 While kcp.py features a diverse set of pre-implemented uses of KCP (see below), it also allows you to directly manage your KCP connections.
 Here is an example using two independent connections locally.
 ```py
-from kcp import KCP
+from kcptoken import KCP
 
 # Create two connections using the same conversation ID.
 kcp1 = KCP(
@@ -52,8 +49,8 @@ print(kcp2.get_received()) # b"Hello, world!"
 ### Asynchronous Server
 kcp.py features an implementation of an asynchronous server using the event loop protocol API.
 ```py
-from kcp.server import Connection
-from kcp.server import KCPServerAsync
+from kcptoken.server import Connection
+from kcptoken.server import KCPServerAsync
 
 # Create the initial server instance.
 server = KCPServerAsync(
@@ -87,7 +84,7 @@ server.start()
 ### Client
 kcp.py also implements a KCP client using Python's sockets and threads.
 ```py
-from kcp import KCPClientSync
+from kcptoken import KCPClientSync
 
 client = KCPClientSync(
     "127.0.0.1",

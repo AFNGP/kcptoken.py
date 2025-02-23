@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from kcp.server import Connection
-from kcp.server import KCPServerAsync
+from kcptoken.server import Connection
+from kcptoken.server import KCPServerAsync
 
 # Create the initial server instance.
 server = KCPServerAsync(

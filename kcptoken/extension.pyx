@@ -14,7 +14,7 @@ cdef extern from "ikcp.h":
 
     # KCP Control Object
     struct IKCPCB:
-        uint32_t conv # Used to verify data is from the correct connection
+        uint64_t conv # Used to verify data is from the correct connection
         uint32_t mtu
         uint32_t mss
         uint32_t state
@@ -67,7 +67,7 @@ cdef extern from "ikcp.h":
     # Functions
 
     # Create KCP Control Object. User is passed to output callback.
-    IKCPCB* ikcp_create(uint32_t conv, void* user)
+    IKCPCB* ikcp_create(uint64_t conv, void* user)
 
     # Release KCP Control Object
     void ikcp_release(IKCPCB *kcp)
@@ -141,7 +141,7 @@ cdef class KCP:
 
     def __init__(
         self,
-        int conv_id,
+        long long conv_id,
         int max_transmission = 1400,
         bool no_delay = False,
         int update_interval = 100,

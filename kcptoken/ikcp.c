@@ -37,7 +37,7 @@ const IUINT32 IKCP_WND_RCV = 128;       // must >= max fragment size
 const IUINT32 IKCP_MTU_DEF = 1400;
 const IUINT32 IKCP_ACK_FAST	= 3;
 const IUINT32 IKCP_INTERVAL	= 100;
-const IUINT32 IKCP_OVERHEAD = 24;
+const IUINT32 IKCP_OVERHEAD = 28;
 const IUINT32 IKCP_DEADLINK = 20;
 const IUINT32 IKCP_THRESH_INIT = 2;
 const IUINT32 IKCP_THRESH_MIN = 2;
@@ -105,7 +105,26 @@ static inline char *ikcp_encode32u(char *p, IUINT32 l)
 	return p;
 }
 
-/* decode 32 bits unsigned int (lsb) */
+/* encode 64 bits unsigned int (lsb) */
+static inline char *ikcp_encode64u(char *p, IUINT64 l)
+{
+#if IWORDS_BIG_ENDIAN || IWORDS_MUST_ALIGN
+	*(unsigned char*)(p + 0) = (unsigned char)((l >>  0) & 0xff);
+	*(unsigned char*)(p + 1) = (unsigned char)((l >>  8) & 0xff);
+	*(unsigned char*)(p + 2) = (unsigned char)((l >> 16) & 0xff);
+	*(unsigned char*)(p + 3) = (unsigned char)((l >> 24) & 0xff);
+	*(unsigned char*)(p + 4) = (unsigned char)((l >> 32) & 0xff);
+	*(unsigned char*)(p + 5) = (unsigned char)((l >> 40) & 0xff);
+	*(unsigned char*)(p + 6) = (unsigned char)((l >> 48) & 0xff);
+	*(unsigned char*)(p + 7) = (unsigned char)((l >> 56) & 0xff);
+#else
+	memcpy(p, &l, 8);
+#endif
+	p += 8;
+	return p;
+}
+
+/* decode 32 bits unsigned long (lsb) */
 static inline const char *ikcp_decode32u(const char *p, IUINT32 *l)
 {
 #if IWORDS_BIG_ENDIAN || IWORDS_MUST_ALIGN
@@ -117,6 +136,25 @@ static inline const char *ikcp_decode32u(const char *p, IUINT32 *l)
 	memcpy(l, p, 4);
 #endif
 	p += 4;
+	return p;
+}
+
+/* decode 64 bits unsigned long (lsb) */
+static inline const char *ikcp_decode64u(const char *p, IUINT64 *l)
+{
+#if IWORDS_BIG_ENDIAN || IWORDS_MUST_ALIGN
+	*l = *(const unsigned char*)(p + 7);
+	*l = *(const unsigned char*)(p + 6) + (*l << 8);
+	*l = *(const unsigned char*)(p + 5) + (*l << 8);
+	*l = *(const unsigned char*)(p + 4) + (*l << 8);
+	*l = *(const unsigned char*)(p + 3) + (*l << 8);
+	*l = *(const unsigned char*)(p + 2) + (*l << 8);
+	*l = *(const unsigned char*)(p + 1) + (*l << 8);
+	*l = *(const unsigned char*)(p + 0) + (*l << 8);
+#else
+	memcpy(l, p, 8);
+#endif
+	p += 8;
 	return p;
 }
 
@@ -232,7 +270,7 @@ void ikcp_qprint(const char *name, const struct IQUEUEHEAD *head)
 // create a new kcpcb
 //---------------------------------------------------------------------
 // Looks important
-ikcpcb* ikcp_create(IUINT32 conv, void *user)
+ikcpcb* ikcp_create(IUINT64 conv, void *user)
 {
 	ikcpcb *kcp = (ikcpcb*)ikcp_malloc(sizeof(struct IKCPCB));
 	if (kcp == NULL) return NULL;
@@ -760,14 +798,15 @@ int ikcp_input(ikcpcb *kcp, const char *data, long size)
 	if (data == NULL || (int)size < (int)IKCP_OVERHEAD) return -1;
 
 	while (1) {
-		IUINT32 ts, sn, len, una, conv;
+		IUINT32 ts, sn, len, una;
+		IUINT64 conv;
 		IUINT16 wnd;
 		IUINT8 cmd, frg;
 		IKCPSEG *seg;
 
 		if (size < (int)IKCP_OVERHEAD) break;
 
-		data = ikcp_decode32u(data, &conv);
+		data = ikcp_decode64u(data, &conv);
 		if (conv != kcp->conv) return -1;
 
 		data = ikcp_decode8u(data, &cmd);
@@ -906,7 +945,7 @@ int ikcp_input(ikcpcb *kcp, const char *data, long size)
 //---------------------------------------------------------------------
 static char *ikcp_encode_seg(char *ptr, const IKCPSEG *seg)
 {
-	ptr = ikcp_encode32u(ptr, seg->conv);
+	ptr = ikcp_encode64u(ptr, seg->conv);
 	ptr = ikcp_encode8u(ptr, (IUINT8)seg->cmd);
 	ptr = ikcp_encode8u(ptr, (IUINT8)seg->frg);
 	ptr = ikcp_encode16u(ptr, (IUINT16)seg->wnd);
@@ -1290,9 +1329,9 @@ int ikcp_waitsnd(const ikcpcb *kcp)
 
 
 // read conv
-IUINT32 ikcp_getconv(const void *ptr)
+IUINT64 ikcp_getconv(const void *ptr)
 {
-	IUINT32 conv;
-	ikcp_decode32u((const char*)ptr, &conv);
+	IUINT64 conv;
+	ikcp_decode64u((const char*)ptr, &conv);
 	return conv;
 }

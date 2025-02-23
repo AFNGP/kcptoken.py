@@ -23,7 +23,7 @@ def parse_bool(string: str) -> bool:
 
 
 # Decide whether to build C extensions
-EXTENSIONS = getenv("KCP_PY_EXTENSIONS")
+EXTENSIONS = getenv("KCPTOKEN_PY_EXTENSIONS")
 with_extensions = True if EXTENSIONS is None else parse_bool(EXTENSIONS)
 
 extensions = []
@@ -33,8 +33,8 @@ if with_extensions:
 
     # Define your extension module(s). For Cython 3, you can use compiler_directives.
     ext = Extension(
-        "kcp.extension",
-        sources=["kcp/extension.pyx", "kcp/ikcp.c"],
+        "kcptoken.extension",
+        sources=["kcptoken/extension.pyx", "kcptoken/ikcp.c"],
         extra_compile_args=["-O3"],
     )
 
@@ -51,8 +51,8 @@ if with_extensions:
     )
 
 
-PACKAGE = "kcp"
-DIRECTORY = "kcp"
+PACKAGE = "kcptoken"
+DIRECTORY = "kcptoken"
 
 
 def build() -> None:

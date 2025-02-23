@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from kcp import KCP
+from kcptoken import KCP
 
 
 def test_delivery():

@@ -5,7 +5,7 @@ Python bindings and networking for modified KCP protocol. Modification involves 
 KCP is a protocol focusing on low latency data delivery with a guarantee of data delivery. It serves as an alternative to the TCP protocol.
 
 ## How to install?
-Run `build.py` and copy `kcptoken` to `lib/site-packages`
+`pip install .`
 
 ## Examples
 ### Just the raw connection
